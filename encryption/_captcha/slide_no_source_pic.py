@@ -15,7 +15,7 @@ from pynput.mouse import Controller, Button
 from utils import smooth_move_to, find_pic
 
 
-def auto_login(url, account_input_xpath, password_input_xpath, login_btn_xpath, username, password, is_wait,
+def auto_login(name, url, account_input_xpath, password_input_xpath, login_btn_xpath, username, password, is_wait,
                wait_ele_xpath, big_img_xpath, small_img_xpath, scale):
     # Options类实例化
     chrome_options = Options()
@@ -68,14 +68,14 @@ def auto_login(url, account_input_xpath, password_input_xpath, login_btn_xpath, 
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        with open('resources/big_jd.png', 'bw') as f:
+        with open(f'resources/big_{name}.png', 'bw') as f:
             f.write(bigimg_data)
 
-        with open('resources/small_jd.png', 'bw') as f:
+        with open(f'resources/small_{name}.png', 'bw') as f:
             f.write(smallimg_data)
 
         # 滑块移动距离
-        x = find_pic('resources/big_jd.png', 'resources/small_jd.png')
+        x = find_pic(f'resources/big_{name}.png', f'resources/small_{name}.png')
         print(x)
         # 真实尺寸和渲染尺寸有偏差：在浏览器通过调试工具elements将render size / Intrinsic size
         x = (x * (242 / 360)) * scale
@@ -95,6 +95,7 @@ def auto_login(url, account_input_xpath, password_input_xpath, login_btn_xpath, 
         mouse.press(Button.left)
         current_x, current_y = mouse.position
         smooth_move_to(mouse, current_x + x + 20, current_y + 10, duration=1)
+        smooth_move_to(mouse, current_x + x + 16, current_y + 8, duration=1)
         smooth_move_to(mouse, current_x + x + 10, current_y + 5, duration=0.7)
         smooth_move_to(mouse, current_x + x, current_y, duration=0.8)
         # 松开鼠标左键

@@ -13,4 +13,4 @@ if __name__ == '__main__':
     big_img_xpath = '//div[@class="JDJRV-bigimg"]/img'
     small_img_xpath = '//div[@class="JDJRV-smallimg"]/img'
 
-    auto_login(url, account_input_xpath, password_input_xpath, login_btn_xpath, username, password, is_wait, wait_ele_xpath, big_img_xpath, small_img_xpath, 1)
+    auto_login('jd', url, account_input_xpath, password_input_xpath, login_btn_xpath, username, password, is_wait, wait_ele_xpath, big_img_xpath, small_img_xpath, 1)
