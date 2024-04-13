@@ -6,7 +6,6 @@ import time
 import base64
 import cv2
 import re
-import pyautogui
 import requests
 
 from scrapy import Selector
@@ -18,7 +17,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 # from pynput.mouse import Controller
-from slide_no_source_pic import *
+from encryption._captcha.slide_no_source_pic import *
 # from utils import smooth_move_to, smooth_move_and_click, find_pic, click_and_drag
 from utils import find_pic
 
