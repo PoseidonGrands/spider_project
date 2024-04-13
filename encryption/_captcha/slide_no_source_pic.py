@@ -68,14 +68,14 @@ def auto_login(url, account_input_xpath, password_input_xpath, login_btn_xpath, 
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        with open('resources/big.png', 'bw') as f:
+        with open('resources/big_jd.png', 'bw') as f:
             f.write(bigimg_data)
 
-        with open('resources/small.png', 'bw') as f:
+        with open('resources/small_jd.png', 'bw') as f:
             f.write(smallimg_data)
 
         # 滑块移动距离
-        x = find_pic('resources/big.png', 'resources/small.png')
+        x = find_pic('resources/big_jd.png', 'resources/small_jd.png')
         print(x)
         # 真实尺寸和渲染尺寸有偏差：在浏览器通过调试工具elements将render size / Intrinsic size
         x = (x * (242 / 360)) * scale
