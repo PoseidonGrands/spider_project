@@ -11,13 +11,31 @@ from utils import slide_no_source_pic
 
 def parse_good(_browser, _good_id):
     """已登录，用selenium读取商品详情页面并获取js加载完后的html"""
+    _browser.implicitly_wait(5)
     _browser.get(f'https://item.jd.com/{_good_id}.html')
+    _browser.refresh()
     html_content = browser.page_source
     with open('resources/source.html', 'w', encoding='utf-8') as f:
         f.write(html_content)
 
-    good = Good()
-    good.id = _good_id
+    # name = _browser.find_element(By.XPATH, '')
+    # price = _browser.find_element(By.XPATH, '')
+    # business = CharField(50, verbose_name='店铺名称')
+    # express = CharField(20, verbose_name='快递名称')
+    # ggbz = TextField(default='', verbose_name='规格和包装')
+    # has_good = CharField(10, verbose_name='是否有货')
+    # img_list = TextField(default='', verbose_name='商品展示图列表')
+    #
+    # good_comment_scale = IntegerField(default=0, verbose_name='好评率')
+    # comments_num = IntegerField(verbose_name='评论数')
+    # has_pic_comments = IntegerField(default=0, verbose_name='有图评论')
+    # has_video_comments = IntegerField(default=0, verbose_name='有视频的评论')
+    # append_comments = IntegerField(default=0, verbose_name='追加评价')
+    # good_comments = IntegerField(default=0, verbose_name='好评率')
+    # middle_comments = IntegerField(default=0, verbose_name='中评率')
+    # bad_comments = IntegerField(default=0, verbose_name='差评数')
+    # good = Good()
+    # good.id = _good_id
 
 
     # headers_media = {
