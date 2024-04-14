@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from pynput.mouse import Controller, Button
 
-from utils import smooth_move_to, find_pic
+from utils.captcha.utils import smooth_move_to, find_pic
 
 
 def auto_login(name, url, account_input_xpath, password_input_xpath, login_btn_xpath, username, password, is_wait,
@@ -102,3 +102,4 @@ def auto_login(name, url, account_input_xpath, password_input_xpath, login_btn_x
         mouse.release(Button.left)
 
         time.sleep(2)
+    return browser

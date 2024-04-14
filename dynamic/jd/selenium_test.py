@@ -1,107 +1,80 @@
-import base64
-import random
-
-import cv2
-import pyautogui
+"""完成自动登录并获取商品的展示视频数据"""
 
 from fake_useragent import UserAgent
 from selenium import webdriver
-from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-ua = UserAgent()
-
-
-url = 'https://passport.jd.com/new/login.aspx?ReturnUrl=https%3A%2F%2Fitem.jd.com%2F100019667283.html&czLogin=1'
-# Options类实例化
-chrome_options = Options()
-
-# 设置浏览器参数
-# 启动时设置默认语言为中文 UTF-8
-
-chrome_options.add_argument('lang=zh_CN.utf-8')
-chrome_options.add_argument('User-Agent=' + ua.random)
-chrome_options.add_argument('--start-maximized')
-# 不关闭网页
-chrome_options.add_experimental_option('detach', True)
-browser = webdriver.Chrome(options=chrome_options)
-
-browser.get(url)
-
-# 解析元素，输入账号密码，点击登录
-account_input = browser.find_element(By.XPATH, '//input[@clstag="pageclick|keycount|passport_main|click_input_loginname"]')
-password_input = browser.find_element(By.XPATH, '//input[@clstag="pageclick|keycount|passport_main|click_input_pwd"]')
-login_btn = browser.find_element(By.XPATH, '//div[@class="item item-fore5"]/div')
-
-account_input.send_keys('sewellhe')
-password_input.send_keys('CFhechaohua1.')
-login_btn.click()
+from model import *
+from utils import slide_no_source_pic
 
 
-def find_pic(target, template):
-    """
-    :param target: 背景图路径
-    :param template: 滑块图片路径
-    :return:
-    """
-    target_rgb = cv2.imread(target)
-    target_gray = cv2.cvtColor(target_rgb, cv2.COLOR_BGR2GRAY)
-    template_rgb = cv2.imread(template, 0)
-    res = cv2.matchTemplate(target_gray, template_rgb, cv2.TM_CCOEFF_NORMED)  # 模板匹配，在大图中找小图
-    value = cv2.minMaxLoc(res)
-    a, b, c, d = value
-    if abs(a) >= abs(b):
-        distance = c[0]
-    else:
-        distance = d[0]
-    print(value)
-    return distance
+def parse_good(_browser, _good_id):
+    """已登录，用selenium读取商品详情页面并获取js加载完后的html"""
+    _browser.get(f'https://item.jd.com/{_good_id}.html')
+    html_content = browser.page_source
+    with open('resources/source.html', 'w', encoding='utf-8') as f:
+        f.write(html_content)
+
+    good = Good()
+    good.id = _good_id
 
 
-# 滑动验证码（无原图
-# 1、下载原图和缺块
-# 图片的html元素点击登录才会出现，等待元素出现再进行出现
-WebDriverWait(browser, 2).until(
-    EC.presence_of_element_located((By.XPATH, '//div[@class="JDJRV-bigimg"]'))
-)
-bigimg_b64 = browser.find_element(By.XPATH, '//div[@class="JDJRV-bigimg"]/img').get_attribute('src')
-bigimg_data = base64.b64decode(bigimg_b64.replace('data:image/png;base64,', ''))
+    # headers_media = {
+    #     'Referer': 'https://item.jd.com/',
+    #     'User-Agent': ua.random
+    # }
+    #
+    # params_media = {
+    #     'callback': 'jQuery9419606',
+    #     'vid': '877299338',
+    #     'type': 1,
+    #     'from': 1,
+    #     'appid': 'item-v3',
+    #     'functionId': 'pc_tencent_video_v3'
+    # }
+    #
+    # # 获取展示视频的id值
+    # try:
+    #     # infoVideoId是pc_tencent_video_v2
+    #     _re = re.compile(r'infoVideoId\":"([^"]*)"?')
+    #     info_video_id = _re.search(html_content).group(1)
+    #
+    #     # mainVideoId是pc_tencent_video_v3
+    #     _re = re.compile(r'mainVideoId\":"([^"]*)"?')
+    #     main_video_id = _re.search(html_content).group(1)
+    #     print(info_video_id, main_video_id)
+    #
+    #     id_list = [info_video_id, main_video_id]
+    #     function_id = ['pc_tencent_video_v2', 'pc_tencent_video_v3']
+    #
+    #     for i in range(2):
+    #         params_media['vid'] = id_list[i]
+    #         params_media['functionId'] = function_id[i]
+    #
+    #         resp = requests.get('https://api.m.jd.com/tencent/video_v3', headers=headers_media
+    #                             , params=params_media)
+    #         print(resp.text)
+    # except:
+    #     print('该商品不存在展示视频....')
 
-smallimg_b64 = browser.find_element(By.XPATH, '//div[@class="JDJRV-smallimg"]/img').get_attribute('src')
-smallimg_data = base64.b64decode(smallimg_b64.replace('data:image/png;base64,', ''))
 
-with open('resources/big.png', 'bw') as f:
-    f.write(bigimg_data)
+if __name__ == '__main__':
+    # 1、自动登录
+    url = 'https://passport.jd.com/new/login.aspx?ReturnUrl=https%3A%2F%2Fhome.jd.com%2F'
+    account_input_xpath = '//input[@clstag="pageclick|keycount|passport_main|click_input_loginname"]'
+    password_input_xpath = '//input[@clstag="pageclick|keycount|passport_main|click_input_pwd"]'
+    login_btn_xpath = '//div[@class="item item-fore5"]/div'
+    username = 'sewellhe'
+    password = 'CFhechaohua1.'
+    is_wait = True
+    wait_ele_xpath = '//div[@class="JDJRV-bigimg"]'
+    big_img_xpath = '//div[@class="JDJRV-bigimg"]/img'
+    small_img_xpath = '//div[@class="JDJRV-smallimg"]/img'
 
-with open('resources/small.png', 'bw') as f:
-    f.write(smallimg_data)
+    browser = slide_no_source_pic.auto_login('jd', url, account_input_xpath, password_input_xpath, login_btn_xpath,
+                                             username, password, is_wait, wait_ele_xpath, big_img_xpath,
+                                             small_img_xpath, 1)
 
-x = find_pic('big.png', 'small.png')
-print(x)
-# 在浏览器通过调试工具elements将render size / Intrinsic size
-x = x * (242 // 360)
-
-slide_btn = browser.find_element(By.XPATH, '//div[@class="JDJRV-slide-inner JDJRV-slide-btn"]')
-# TODO 网页元素位置映射到pyautogui会有一定缩放
-offset_x = slide_btn.location.get('x') * 1.30
-offset_y = slide_btn.location.get('y') * 1.75
-
-loc_btn = slide_btn.location.copy()
-loc_btn['y'] += 285
-
-
-
-
-
-# account_input.click()
-# password_input.click()
-# print(account_input.get_attribute('name'))
-
-
-# # 获取网页的标题内容
-# print(driver.title)
-# # page_source用于获取网页的Html代码
-# print(driver.page_source)
+    # 2、解析数据
+    parse_good(browser, '100019667283')
