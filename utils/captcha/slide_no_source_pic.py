@@ -29,7 +29,7 @@ def auto_login(name, url, account_input_xpath, password_input_xpath, login_btn_x
     chrome_options.add_argument('--start-maximized')
     # 不关闭网页
     chrome_options.add_experimental_option('detach', True)
-    browser = webdriver.Chrome(options=chrome_options)
+    browser = webdriver.Chrome(options=chrome_options, executable_path='/Users/sewellhe/Py_Projects/spider_project/chromedriver')
 
     browser.get(url)
 
@@ -97,6 +97,8 @@ def auto_login(name, url, account_input_xpath, password_input_xpath, login_btn_x
         smooth_move_to(mouse, current_x + x + 20, current_y + 10, duration=1)
         smooth_move_to(mouse, current_x + x + 16, current_y + 8, duration=1)
         smooth_move_to(mouse, current_x + x + 10, current_y + 5, duration=0.7)
+        smooth_move_to(mouse, current_x + x + 5, current_y + 3, duration=0.7)
+        smooth_move_to(mouse, current_x + x - 5, current_y - 3, duration=0.7)
         smooth_move_to(mouse, current_x + x, current_y, duration=0.8)
         # 松开鼠标左键
         mouse.release(Button.left)
