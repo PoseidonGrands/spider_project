@@ -5,6 +5,7 @@ with open('resources/source.html', 'r') as f:
     html_content = f.read()
 
 sel = Selector(text=html_content)
+btn = sel.xpath('//div[@id="choose-attr-1"]/div[2]/div[2]').extract()
 name = ''.join(sel.xpath('//div[@class="sku-name"]/text()').extract()).strip()
 print(name)
 price = sel.xpath('//span[@class="p-price"]/span').extract()

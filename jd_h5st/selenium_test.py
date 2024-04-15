@@ -1,19 +1,40 @@
 """完成自动登录并获取商品的展示视频数据"""
+import time
 
 from fake_useragent import UserAgent
 from selenium import webdriver
+from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
+from pynput.mouse import Controller, Button
 
 from model import *
-from utils import slide_no_source_pic
+from utils import slide_no_source_pic, utils
 
 
 def parse_good(_browser, _good_id):
+
     """已登录，用selenium读取商品详情页面并获取js加载完后的html"""
-    _browser.implicitly_wait(5)
+    _browser.implicitly_wait(6)
     _browser.get(f'https://item.jd.com/{_good_id}.html')
-    _browser.refresh()
+
+    # 直接找到元素并点击会被反爬，控制鼠标移动到元素上再按下
+    # btn = _browser.find_element(By.XPATH, '//div[@id="choose-attr-1"]/div[2]/div[2]')
+    # mouse = Controller()
+    # utils.smooth_move_to(mouse, 94, 87, duration=1)
+    # mouse.click(Button.left)
+
+    # 等待直到某个元素可见
+    # while True:
+    #     try:
+    #         WebDriverWait(_browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'prom-item')))
+    #         break
+    #     except:
+    #         _browser.refresh()
+    #         time.sleep(10)
+
     html_content = browser.page_source
     with open('resources/source.html', 'w', encoding='utf-8') as f:
         f.write(html_content)
@@ -83,8 +104,8 @@ if __name__ == '__main__':
     account_input_xpath = '//input[@clstag="pageclick|keycount|passport_main|click_input_loginname"]'
     password_input_xpath = '//input[@clstag="pageclick|keycount|passport_main|click_input_pwd"]'
     login_btn_xpath = '//div[@class="item item-fore5"]/div'
-    username = 'sewellhe'
-    password = 'CFhechaohua1.'
+    username = 'pixlehe'
+    password = 'Hua12345678.'
     is_wait = True
     wait_ele_xpath = '//div[@class="JDJRV-bigimg"]'
     big_img_xpath = '//div[@class="JDJRV-bigimg"]/img'
@@ -94,5 +115,6 @@ if __name__ == '__main__':
                                              username, password, is_wait, wait_ele_xpath, big_img_xpath,
                                              small_img_xpath, 1)
 
+    time.sleep(5)
     # 2、解析数据
     parse_good(browser, '100019667283')

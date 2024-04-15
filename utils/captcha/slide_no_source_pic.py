@@ -81,8 +81,8 @@ def auto_login(name, url, account_input_xpath, password_input_xpath, login_btn_x
         x = (x * (242 / 360)) * scale
         print(f'实际需要移动:{x}')
 
-        offset_x = (smallimg.location.get('x') * scale) + 22
-        offset_y = (smallimg.location.get('y') * scale) + 164 + 26
+        offset_x = (smallimg.location.get('x') * scale) + 20
+        offset_y = (smallimg.location.get('y') * scale) + 164 + 24
         print(f'offset_x:{offset_x}')
         print(offset_x, offset_y)
 
